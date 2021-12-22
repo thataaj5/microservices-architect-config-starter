@@ -3,7 +3,7 @@
   metadata:
     labels:
       app: "react-ui"
-    name: "ui"
+    name: "ui-service"
   spec:
     ports:
     - name: "http"
