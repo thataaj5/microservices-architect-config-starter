@@ -19,9 +19,9 @@ graphs['h'] = Histogram('python_request_duration_seconds', 'Histogram for the du
 @app.route('/', methods = ['GET'])
 def hello():
    start = time.time()
-    graphs['c'].inc()
-    end = time.time()
-    graphs['h'].observe(end - start)
+   graphs['c'].inc()
+   end = time.time()
+   graphs['h'].observe(end - start)
    print('Getting List of WishList Items')
    x = {
     "1": "Apple Iphone",
