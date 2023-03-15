@@ -1,0 +1,37 @@
+name: DEV - Build and Deploy
+
+on:
+  push:
+    branches:
+      - Dockerfile
+
+jobs:
+  build:
+    # env:
+    #   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 1.15
+        uses: actions/setup-java@v3
+        with:
+          distribution: adopt
+          java-version: 15
+          cache: maven
+
+      - name: Extract artifact version
+        run: |
+          export VERSION=$(grep --max-count=1 '<version>' pom.xml | awk -F '>' '{ print $2 }' | awk -F '<' '{ print $1 }')
+          export ARTIFACT_VERSION="${VERSION}.${GITHUB_RUN_NUMBER}-dev"
+          echo "ARTIFACT_VERSION=${ARTIFACT_VERSION}" > ${GITHUB_ENV}
+          echo $ARTIFACT_VERSION
+      - name: Package Build
+        if: success()
+        run: |
+          cd ui-web-app-reactjs
+          docker build . -t ui
+
